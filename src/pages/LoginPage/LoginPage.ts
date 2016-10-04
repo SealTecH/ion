@@ -4,14 +4,13 @@
  */
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import {DbService,Subscription} from '../../db/DbService'
-import {Injectable} from '@angular/core'
+import {DbService} from '../../db/DbService'
 import {Device} from 'ionic-native';
 import {Platform} from 'ionic-angular';
 import { Http } from '@angular/http';
 import {SubscriptionsPage} from "../SubscriptionsPage/SubscriptionsPage";
 import {User} from "../../user/User";
-
+import {Subscription} from 'rxjs';
 @Component({
   templateUrl: 'Login.html'
 })
@@ -33,7 +32,7 @@ export class LoginPage
     });
   }
 
-  public onStart(login:string,pass:string) {
+   onStart(login:string,pass:string) {
     let url = 'http://preview.sysonline.com/ezparts-mobile/subscriptions.php';
     console.log("log "+login);
     console.log("pas "+pass);
@@ -47,7 +46,6 @@ export class LoginPage
       console.log(answer);
     if(answer.r ==='ok')
     {
-      let UserId =null;
        this.db.getUser(login,pass).then(data=>{
          console.log("data "+data);
          if(data==undefined)
@@ -68,7 +66,6 @@ export class LoginPage
            this.user.insertUser(data,login,pass,this.device['uuid']);
            this.navCtrl.push(SubscriptionsPage,{UserId:data});
          }
-
        });
     }
      else

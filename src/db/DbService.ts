@@ -5,12 +5,13 @@
 import {Injectable} from '@angular/core';
 import {Sql} from "../providers/Sql";
 //import {DelaySignature} from "../../node_modules/rxjs/src/operator/delay";
+import {ModelService} from "../providers/ModelService";
 @Injectable()
 export  class  DbService
 {
   storage: Sql;
 
-  constructor(private sql: Sql){
+  constructor(private sql: Sql, public ModelService: ModelService){
     this.storage = sql;
    // this.insertData();
    // this.storage.query("DROP TABLE Subscriptions");
@@ -130,7 +131,6 @@ export  class  DbService
 
   public last_id()
   {
-    let id:number;
     return Promise.resolve( this.storage.query("SELECT last_insert_rowid()").then(
       data=>{
         if(data.res.rows.length>0){
@@ -165,7 +165,6 @@ export  class  DbService
 
   public getUser(login: string,pass:string)
   {
-    let id: number = null;
     return Promise.resolve( this.storage.query('SELECT id FROM users WHERE Username = ? and Password = ?',[login,pass]).then(
       data=>
       {
@@ -186,7 +185,6 @@ export  class  DbService
 
   public addSubscriptions(answer,UserId:any)
   {
-    let sub;
     for(let i=0;i<answer.length;i++)
     {
       console.log('INSERT INTO Subscriptions (Ext_id,Name,User_id) VALUES (?,?,?)',[answer[i].id,answer[i].d,UserId]);
@@ -196,7 +194,7 @@ export  class  DbService
   }
 
 
-  public addModels(answer,i,sub_id):Promise
+  public addModels(answer,i,sub_id)
   {
     return Promise.resolve(
     this.storage.query("SELECT id  from Models WHERE Ext_id = ?",[answer[i].id]).then(data=>{
@@ -207,6 +205,7 @@ export  class  DbService
         console.log("UPDATE Models SET Code =?,Desc =?",[answer[i].c,answer[i].d]);
         this.storage.query("UPDATE Models SET Code =?,Desc =?,Ext_id =? WHERE id = ?",[answer[i].c,answer[i].d,answer[i].id,local_id]).then(d =>{
           i++;
+		  this.ModelService.Models.push(new Model(data,answer[i].id,sub_id,answer[i].c,answer[i].d));
           if(i<answer.length)
             this.addModels(answer,i,sub_id);
           else
@@ -217,12 +216,18 @@ export  class  DbService
       {
         console.log("INSERT INTO Models (Sub_id,Ext_id,Code,Desc) VALUES (?,?,?,?)",[answer[i].id,answer[i].c,answer[i].d]);
         this.storage.query("INSERT INTO Models (Sub_id,Ext_id,Code,Desc) VALUES (?,?,?,?)",[sub_id,answer[i].id,answer[i].c,answer[i].d]).then(d =>{
-          i++;
-          if(i<answer.length)
-            this.addModels(answer,i,sub_id);
-          else
-            return Promise.resolve(null);
+		  this.last_id().then(data=>{
+        console.log("answer is and i = "+i);
+        console.log(answer[i]);
+			 this.ModelService.Models.push(new Model(data,answer[i].id,sub_id,answer[i].c,answer[i].d));
+        i++;
+        if(i<answer.length)
+          this.addModels(answer,i,sub_id);
+        else
+          return Promise.resolve(null);
         });
+		  });
+
       }
     })
   );

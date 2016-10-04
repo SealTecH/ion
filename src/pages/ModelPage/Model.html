@@ -17,7 +17,7 @@
 
 
   <ion-list>
-    <ion-item  *ngFor="let item of (Models)"  >
+    <ion-item  *ngFor="let item of models.Models"  >
       <h2>{{item.Desc}}</h2>
       <p>id:{{item.id}}</p>
       <p>Ext_id:{{item.Ext_id}}</p>
@@ -25,7 +25,6 @@
       <p>Code:{{item.Code}}</p>
       <button (click)="onClick($event,item.id)">CLICK</button>
     </ion-item>
-    <button (click)="onRef($event,0)">REFRESH</button>
   </ion-list>
 
 <!--

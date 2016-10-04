@@ -3,8 +3,7 @@
  */
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import {DbService,Subscription,Model,Submodel} from '../../db/DbService'
-import {Injectable} from '@angular/core'
+import {DbService,Subscription} from '../../db/DbService'
 import {ModelPage} from "../ModelPage/ModelPage";
 import {NavParams} from "ionic-angular";
 @Component({
@@ -15,6 +14,7 @@ export class SubscriptionsPage {
   Subscriptions:Subscription[];
   UserId: number;
   constructor(public navCtrl: NavController,private db: DbService, navParams: NavParams) {
+    this.Subscriptions = [];
    let UserId =  navParams.get('UserId');
     console.log("sbbpage uid "+UserId);
     this.db.returnSubscriptions(UserId).then(

@@ -7,8 +7,8 @@ import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import {LoginPage} from "../pages/LoginPage/LoginPage";
 import {ModelPage} from "../pages/ModelPage/ModelPage";
+import {ModelService} from "../providers/ModelService";
 import {SubscriptionsPage} from "../pages/SubscriptionsPage/SubscriptionsPage";
-import {SubmodelPage} from "../pages/SubmodelPage/SubmodelPage";
 import {DbService} from "../db/DbService";
 import {User} from "../user/User";
 import {Storage} from "../../node_modules/@ionic/storage/dist/es5/storage";
@@ -25,7 +25,6 @@ import {Sql} from "../providers/Sql";
     LoginPage,
     ModelPage,
     SubscriptionsPage,
-    SubmodelPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -39,15 +38,15 @@ import {Sql} from "../providers/Sql";
     TabsPage,
     LoginPage,
     ModelPage,
-    SubscriptionsPage,
-    SubmodelPage
+    SubscriptionsPage
   ],
   providers: [
     DbService,
     User,
     SQLite,
     Storage,
-    Sql
+    Sql,
+	ModelService
   ]
 })
 export class AppModule {}
